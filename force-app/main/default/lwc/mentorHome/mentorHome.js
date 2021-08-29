@@ -1,0 +1,44 @@
+import { LightningElement, wire, track, api  } from 'lwc';
+import getContactsApex from '@salesforce/apex/mangerController.getContacts'
+import getemployeeApex from '@salesforce/apex/MentorController.getContacts'
+
+export default class MentorHome extends LightningElement {
+    @wire(getContactsApex) wiredContacts1; //These will be automatically available if successful
+    getContactsFromSalesforce() {
+        getContactsApex()
+        .then(contacts => {
+            //console.log(JSON.stringify(contacts))
+            console.log('Got Contacts: ' + contacts.length);
+        })
+        .catch(error => {
+            console.log(error)
+        });
+    }
+    @wire(getemployeeApex) wiredContacts;
+    getContactsFromSalesforce() {
+        getemployeeApex()
+        .then(employee => {
+            //console.log(JSON.stringify(contacts))
+            console.log('Got Contacts: ' + employee.length);
+        })
+        .catch(error => {
+            console.log(error)
+        });
+    }
+    handleOpenRecordClick (event) {
+        console.log("Click Open");
+        this[NavigationMixin.Navigate]({
+            type: 'standard__recordRelationshipPage',
+            attributes: {
+                recordId: this.recordId,
+                objectApiName: 'user_task__c',
+                actionName: 'view'
+            },
+        });
+    }
+    @api objectApiName = "User_Job_Role__c";
+    @api objectApiName1 = "Job_Role_Onboarding_Step__c";
+    handleSuccess(){
+    alert('Record Created !!');
+}
+}
